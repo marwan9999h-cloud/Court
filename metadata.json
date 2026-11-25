@@ -1,0 +1,6 @@
+{
+  "name": "The Court",
+  "description": "A 3D mystery courtroom game from the first-person perspective of the presiding judge.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
