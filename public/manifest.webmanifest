@@ -1,0 +1,36 @@
+{
+  "name": "COURT | محكمة",
+  "short_name": "COURT | محكمة",
+  "description": "A 3D mystery courtroom game from the first-person perspective of the presiding judge.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait-primary",
+  "theme_color": "#0B0B0C",
+  "background_color": "#0B0B0C",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": [
+    "games",
+    "entertainment"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
