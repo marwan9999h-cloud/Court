@@ -331,8 +331,8 @@ export function getNotesPaperTexture(): THREE.CanvasTexture {
     ctx.font = 'italic 18px sans-serif';
     ctx.fillStyle = '#0f172a';
     ctx.textAlign = 'right';
-    ctx.fillText('• مراجعة استنساخ بطاقة الدخول الممغنطة..', canvas.width - 50, 205);
-    ctx.fillText('• التحقق من وجود فني الصيانة منذر وهبة..', canvas.width - 50, 281);
+    ctx.fillText('• مراجعة الأحراز وتقارير المعمل الجنائي..', canvas.width - 50, 205);
+    ctx.fillText('• التحقق من حجج غياب المتهمين وزمن الواقعة..', canvas.width - 50, 281);
     ctx.fillText('• مطابقة أقوال المتهم مع تقارير البصمات..', canvas.width - 50, 357);
 
     // Faint Judicial watermark seal
@@ -356,4 +356,3 @@ export function getNotesPaperTexture(): THREE.CanvasTexture {
   textureCache.set(cacheKey, texture);
   return texture;
 }
-
