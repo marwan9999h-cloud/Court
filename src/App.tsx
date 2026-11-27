@@ -295,6 +295,7 @@ export default function App() {
         phase={phase}
         caseData={caseData}
         careerStats={careerStats}
+        investigation={investigation}
         feedbackMessage={feedbackMessage}
         hoveredObject={hoveredObject}
         soundEnabled={soundEnabled}
