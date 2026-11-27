@@ -340,6 +340,9 @@ export interface CaseData {
   timeline?: { time: string; event: string }[];
   contradictions?: string[];
   interrogations: InterrogationQuestion[];
+  interrogations2?: InterrogationQuestion[];
+  interrogations3?: InterrogationQuestion[];
+  witnessQuestions?: InterrogationQuestion[];
   verdicts: VerdictOption[];
   verdictConfig?: CaseVerdictConfig;
   unlockRequirement?: string;
