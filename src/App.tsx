@@ -3,14 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import { useCourtGame } from './game/GameState';
 import {
   MUNTHER_INTERROGATION_QUESTIONS,
   MOAMEN_INTERROGATION_QUESTIONS,
   TAREK_WITNESS_QUESTIONS,
 } from './game/FileSystem';
-import { CourtroomScene } from './components/CourtroomScene';
+// Lazy-load the 3D courtroom (three.js) so the menu screens paint first;
+// the scene chunk downloads right after instead of blocking first load.
+const CourtroomScene = lazy(() =>
+  import('./components/CourtroomScene').then((m) => ({ default: m.CourtroomScene })),
+);
 import { MainMenu } from './ui/MainMenu';
 import { SeasonsScreen } from './ui/SeasonsScreen';
 import { LevelSelectScreen } from './ui/LevelSelectScreen';
@@ -103,6 +107,7 @@ export default function App() {
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-neutral-950 text-neutral-100 select-none font-sans">
       {/* 3D First-Person Courtroom & Judge Desk Canvas View */}
+      <Suspense fallback={<div className="absolute inset-0 bg-neutral-950" />}>
       <CourtroomScene
         phase={phase}
         caseData={caseData}
@@ -128,6 +133,7 @@ export default function App() {
         onToggleMicrophone={toggleMicrophone}
         onHoverObject={setHoveredObject}
       />
+      </Suspense>
 
       {/* Main Menu Screen */}
       {phase === 'MAIN_MENU' && (
