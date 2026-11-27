@@ -258,17 +258,37 @@ export function evaluateCaseJudgment(
   if (!investigation.examinedFiles.includes('characters')) {
     missedItems.push('لم تطالع سجل الشخصيات وحجج الغياب المكتوبة.');
   }
+  const isArchiveCase = caseData.caseId === 'CASE_001' || caseData.caseNumber === 'CR-2026/089-B';
+  const witnessName =
+    caseData.characters.find((c) => c.id === 'char_guard' || c.role === 'witness')?.name ||
+    'الشاهد';
   if ((investigation.askedQuestions['karim']?.length || 0) === 0) {
-    missedItems.push('لم تستجوب المتهم الأول كريم المنصور حول بطاقته المستنسخة.');
+    missedItems.push(
+      isArchiveCase
+        ? 'لم تستجوب المتهم الأول كريم المنصور حول بطاقته المستنسخة.'
+        : `لم تستجوب المتهم الأول ${caseData.defendantNames[0] || ''}.`,
+    );
   }
   if ((investigation.askedQuestions['munther']?.length || 0) === 0) {
-    missedItems.push('لم تستجوب المتهم الثاني منذر وهبة حول مفتاح الصيانة والحوالة المالية.');
+    missedItems.push(
+      isArchiveCase
+        ? 'لم تستجوب المتهم الثاني منذر وهبة حول مفتاح الصيانة والحوالة المالية.'
+        : `لم تستجوب المتهم الثاني ${caseData.defendantNames[1] || ''}.`,
+    );
   }
   if ((investigation.askedQuestions['moamen']?.length || 0) === 0) {
-    missedItems.push('لم تستجوب المتهم الثالث مؤمن رزق حول قطع البث من محطته.');
+    missedItems.push(
+      isArchiveCase
+        ? 'لم تستجوب المتهم الثالث مؤمن رزق حول قطع البث من محطته.'
+        : `لم تستجوب المتهم الثالث ${caseData.defendantNames[2] || ''}.`,
+    );
   }
   if ((investigation.askedQuestions['tarek']?.length || 0) === 0) {
-    missedItems.push('لم تسمع شهادة حارس الأمن طارق الحمد الذي رأى مؤمن داخل غرفة المراقبة.');
+    missedItems.push(
+      isArchiveCase
+        ? 'لم تسمع شهادة حارس الأمن طارق الحمد الذي رأى مؤمن داخل غرفة المراقبة.'
+        : `لم تسمع شهادة ${witnessName}.`,
+    );
   }
 
   if (thoroughnessCapApplied) {
