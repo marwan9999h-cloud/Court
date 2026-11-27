@@ -412,17 +412,23 @@ export function useCourtGame(initialCase: CaseData = DEFAULT_CASE_DATA) {
         let discoveredContradictions = [...prev.discoveredContradictions];
 
         if (fileId === 'case_file' && !prev.examinedFiles.includes('case_file')) {
-          const note = 'فحص لائحة الاتهام: 3 متهمين والقبو فُتح ببطاقة كريم المنصور في 23:43.';
+          const note =
+            caseData.caseId === 'CASE_001'
+              ? 'فحص لائحة الاتهام: 3 متهمين والقبو فُتح ببطاقة كريم المنصور في 23:43.'
+              : `فحص لائحة الاتهام: قضية ${caseData.title} — ${caseData.defendantNames.length} متهمين رهن المحاكمة.`;
           if (!discoveredNotes.includes(note)) discoveredNotes.push(note);
         }
 
         if (fileId === 'evidence') {
           examinedEvidenceIds = caseData.evidence.map((e) => e.id);
           if (!prev.examinedFiles.includes('evidence')) {
-            const evNotes = [
-              'تقرير المعمل: بطاقة كريم استُنسخت لاسلكياً والخزنة فُتحت بقفازات مهنية.',
-              'أحراز القبو: مفتاح منذر وهبة بمسرح الجريمة وأمر قطع البث من محطة مؤمن رزق.',
-            ];
+            const evNotes =
+              caseData.caseId === 'CASE_001'
+                ? [
+                    'تقرير المعمل: بطاقة كريم استُنسخت لاسلكياً والخزنة فُتحت بقفازات مهنية.',
+                    'أحراز القبو: مفتاح منذر وهبة بمسرح الجريمة وأمر قطع البث من محطة مؤمن رزق.',
+                  ]
+                : caseData.evidence.slice(0, 2).map((e) => e.keyFinding);
             for (const n of evNotes) {
               if (!discoveredNotes.includes(n)) discoveredNotes.push(n);
             }
@@ -432,11 +438,16 @@ export function useCourtGame(initialCase: CaseData = DEFAULT_CASE_DATA) {
         if (fileId === 'characters' || fileId === 'witnesses') {
           examinedCharacterIds = caseData.characters.map((c) => c.id);
           if (!prev.examinedFiles.includes('characters')) {
-            const cNote = 'ملف الأطراف: ديون قمار وحوالة مجهولة لمنذر، وشهادة الحارس تكذب مؤمن.';
+            const cNote =
+              caseData.caseId === 'CASE_001'
+                ? 'ملف الأطراف: ديون قمار وحوالة مجهولة لمنذر، وشهادة الحارس تكذب مؤمن.'
+                : `ملف الأطراف: المتهمون ${caseData.defendantNames.join('، ')}.`;
             if (!discoveredNotes.includes(cNote)) discoveredNotes.push(cNote);
-            const cContradiction = 'تناقض مؤمن رزق: يدعي المرض بينما سجل غرفته فتح في 23:44.';
-            if (!discoveredContradictions.includes(cContradiction)) {
-              discoveredContradictions.push(cContradiction);
+            if (caseData.caseId === 'CASE_001') {
+              const cContradiction = 'تناقض مؤمن رزق: يدعي المرض بينما سجل غرفته فتح في 23:44.';
+              if (!discoveredContradictions.includes(cContradiction)) {
+                discoveredContradictions.push(cContradiction);
+              }
             }
           }
         }
@@ -526,12 +537,17 @@ export function useCourtGame(initialCase: CaseData = DEFAULT_CASE_DATA) {
   const { deskNoteLines, deskNoteSubtitle } = useMemo(() => {
     const discovered = investigation.discoveredNotes;
     if (discovered.length === 0) {
+      const witnessLabel =
+        caseData.caseId === 'CASE_001'
+          ? 'الحارس طارق'
+          : caseData.characters.find((c) => c.id === 'char_guard' || c.role === 'witness')?.name ||
+            'الشاهد';
       return {
         deskNoteSubtitle: 'بانتظار فحص الأدلة',
         deskNoteLines: [
           '• افحص ملف القضية والأحراز',
           '• استجوب المتهمين الثلاثة',
-          '• اسمع شهادة الحارس طارق',
+          `• اسمع شهادة ${witnessLabel}`,
         ],
       };
     }
@@ -541,7 +557,7 @@ export function useCourtGame(initialCase: CaseData = DEFAULT_CASE_DATA) {
       deskNoteSubtitle: `${discovered.length} استنتاجات مدوّنة`,
       deskNoteLines: latestThree,
     };
-  }, [investigation.discoveredNotes]);
+  }, [investigation.discoveredNotes, caseData]);
 
   return {
     // Navigation
