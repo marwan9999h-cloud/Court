@@ -9,11 +9,14 @@ interface NotesViewProps {
 
 export function NotesView({ caseData, investigation }: NotesViewProps) {
   const bailList = Object.values(investigation.bailDecisions || {});
+  const witnessName =
+    caseData.characters.find((c) => c.id === 'char_guard' || c.role === 'witness')?.name ||
+    'الشاهد';
   const speakerKeys = [
-    { key: 'karim', label: 'استجواب المتهم الأول: كريم المنصور' },
-    { key: 'munther', label: 'استجواب المتهم الثاني: منذر وهبة' },
-    { key: 'moamen', label: 'استجواب المتهم الثالث: مؤمن رزق' },
-    { key: 'tarek', label: 'سماع شهادة الحارس: طارق الحمد' },
+    { key: 'karim', label: `استجواب المتهم الأول: ${caseData.defendantNames[0] || ''}` },
+    { key: 'munther', label: `استجواب المتهم الثاني: ${caseData.defendantNames[1] || ''}` },
+    { key: 'moamen', label: `استجواب المتهم الثالث: ${caseData.defendantNames[2] || ''}` },
+    { key: 'tarek', label: `سماع شهادة الشاهد: ${witnessName}` },
   ];
 
   const fileChecklist: { id: FileId; label: string }[] = [
