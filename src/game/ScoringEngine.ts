@@ -71,14 +71,14 @@ function evaluateSingleDefendant(
       fairnessLabel = 'حكم عادل';
       verdictPts = j.verdictType === 'acquittal' ? 1.0 : 0.9;
       propPts = 1.0;
-      sentencingNote = `${rule.defendantName}: حكم عادل بالبراءة يتسق مع دليل استنساخ البطاقة وغياب البصمات عن الخزنة.`;
+      sentencingNote = rule.notes?.acquittalFair ?? `${rule.defendantName}: حكم عادل بالبراءة يتسق مع الأدلة وغياب الدليل الجازم ضده.`;
     } else {
       verdictCorrect = false;
       isFair = false;
       fairnessLabel = 'حكم جائر — إدانة بريء';
       verdictPts = 0;
       propPts = 0;
-      sentencingNote = `${rule.defendantName}: إدانة غير عادلة لشخص بريء؛ الأدلة الجنائية أثبتت استنساخ بطاقته من طرف ثالث.`;
+      sentencingNote = rule.notes?.innocentConvicted ?? `${rule.defendantName}: إدانة غير عادلة لشخص بريء؛ الأدلة الجنائية لا تثبت تورطه.`;
     }
   } else {
     // Defendant is actually guilty (Munther / Moamen)
@@ -95,14 +95,23 @@ function evaluateSingleDefendant(
       fairnessLabel = 'حكم جائر — تساهل مخل';
       verdictPts = 0.65;
       propPts = 0.25;
-      sentencingNote = `${rule.defendantName}: التوجه للإدانة صحيح، لكن العقوبة (${meta.label}) متساهلة جداً لا تتناسب مع خطورة الاستيلاء على وثائق سيادية.`;
+      sentencingNote = rule.notes?.lenientPenalty ?? `${rule.defendantName}: التوجه للإدانة صحيح، لكن العقوبة (${meta.label}) متساهلة جداً لا تتناسب مع خطورة الجريمة.`;
     } else if (j.verdictType === 'death_penalty') {
-      verdictCorrect = true;
-      isFair = false;
-      fairnessLabel = 'حكم جائر — عقوبة مبالغ فيها';
-      verdictPts = 0.7;
-      propPts = 0;
-      sentencingNote = `${rule.defendantName}: عقوبة الإعدام مبالغ فيها ولا تتناسب مع جريمة سرقة غير مصحوبة بقتل.`;
+      if (rule.acceptableVerdictTypes.includes('death_penalty')) {
+        verdictCorrect = true;
+        isFair = true;
+        fairnessLabel = 'حكم عادل';
+        verdictPts = 1.0;
+        propPts = 1.0;
+        sentencingNote = rule.notes?.deathPenaltyFair ?? `${rule.defendantName}: عقوبة الإعدام متناسبة مع جسامة القتل العمد المثبت بالأدلة.`;
+      } else {
+        verdictCorrect = true;
+        isFair = false;
+        fairnessLabel = 'حكم جائر — عقوبة مبالغ فيها';
+        verdictPts = 0.7;
+        propPts = 0;
+        sentencingNote = rule.notes?.deathPenaltyHarsh ?? `${rule.defendantName}: عقوبة الإعدام مبالغ فيها ولا تتناسب مع طبيعة الجريمة.`;
+      }
     } else {
       // Guilty with prison term
       verdictCorrect = true;
