@@ -88,6 +88,18 @@ export default function App() {
   const isModalOpen =
     isVerdictOpen || phase === 'LEVEL_COMPLETE' || phase === 'CAREER_PROFILE';
 
+  // Resolve accused/witness profiles: original archive case uses fixed ids;
+  // new cases flag defendants (isDefendant) and give the witness role 'witness'.
+  const flaggedDefendants = caseData.characters.filter((c) => c.isDefendant);
+  const accusedProfiles = [
+    caseData.characters.find((c) => c.id === 'char_defendant') ?? flaggedDefendants[0],
+    caseData.characters.find((c) => c.id === 'char_maintenance') ?? flaggedDefendants[1],
+    caseData.characters.find((c) => c.id === 'char_control') ?? flaggedDefendants[2],
+  ];
+  const witnessProfile =
+    caseData.characters.find((c) => c.id === 'char_guard') ??
+    caseData.characters.find((c) => c.role === 'witness');
+
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-neutral-950 text-neutral-100 select-none font-sans">
       {/* 3D First-Person Courtroom & Judge Desk Canvas View */}
@@ -181,34 +193,31 @@ export default function App() {
         askedQuestionIds={investigation.askedQuestions[interrogee] || []}
         onQuestionAnswered={handleQuestionAnswered}
         kind={interrogee === 'tarek' ? 'witness' : 'accused'}
-        profile={caseData.characters.find((c) =>
+        profile={
           interrogee === 'munther'
-            ? c.id === 'char_maintenance'
+            ? accusedProfiles[1]
             : interrogee === 'moamen'
-              ? c.id === 'char_control'
+              ? accusedProfiles[2]
               : interrogee === 'tarek'
-                ? c.id === 'char_guard'
-                : c.isDefendant,
-        )}
+                ? witnessProfile
+                : (accusedProfiles[0] ?? caseData.characters.find((c) => c.isDefendant))
+        }
         questions={
           interrogee === 'munther'
-            ? MUNTHER_INTERROGATION_QUESTIONS
+            ? (caseData.interrogations2 ?? MUNTHER_INTERROGATION_QUESTIONS)
             : interrogee === 'moamen'
-              ? MOAMEN_INTERROGATION_QUESTIONS
+              ? (caseData.interrogations3 ?? MOAMEN_INTERROGATION_QUESTIONS)
               : interrogee === 'tarek'
-                ? TAREK_WITNESS_QUESTIONS
+                ? (caseData.witnessQuestions ?? TAREK_WITNESS_QUESTIONS)
                 : caseData.interrogations
         }
         defendantName={
           interrogee === 'munther'
-            ? caseData.characters.find((c) => c.id === 'char_maintenance')?.name ||
-              'المتهم الثاني'
+            ? accusedProfiles[1]?.name || caseData.defendantNames[1] || 'المتهم الثاني'
             : interrogee === 'moamen'
-              ? caseData.characters.find((c) => c.id === 'char_control')?.name ||
-                'المتهم الثالث'
+              ? accusedProfiles[2]?.name || caseData.defendantNames[2] || 'المتهم الثالث'
               : interrogee === 'tarek'
-                ? caseData.characters.find((c) => c.id === 'char_guard')?.name ||
-                  'الشاهد'
+                ? witnessProfile?.name || 'الشاهد'
                 : caseData.defendantNames[0] || 'المتهم'
         }
       />
