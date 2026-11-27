@@ -15,7 +15,7 @@ export const CASE_06_DATA: CaseData = {
   defendantNames: ['ليلى مراد', 'يوسف الشناوي', 'سيف الحديدي'],
   coverInfo: {
     courtHeader: 'محكمة جنايات القاهرة',
-    fileNumber: 'FILE 006',
+    fileNumber: 'FILE 005',
     caseTitle: 'المكالمة الأخيرة',
     caseType: 'جناية قتل عمد مع سبق الإصرار',
     classification: 'سرّي للغاية',
@@ -326,6 +326,8 @@ export const CASE_06_DATA: CaseData = {
       unlockedNote: 'تردد وتبرير عام لتصريح الضحية دون نفي قاطع يثبت بقاءها بعيداً عن غرفة التسجيل في لحظة الاعتداء.',
       reaction: 'hesitant',
     },
+  ],
+  interrogations2: [
     // ===== المتهم: يوسف الشناوي =====
     {
       id: 'q5',
@@ -348,6 +350,8 @@ export const CASE_06_DATA: CaseData = {
       unlockedNote: 'يفرق بوضوح بين عمله الصوتي وسجلات غرفة التحكم والتايم كود، متسقاً مع موقعه.',
       reaction: 'confident',
     },
+  ],
+  interrogations3: [
     // ===== المتهم: سيف الحديدي =====
     {
       id: 'q8',
@@ -370,6 +374,8 @@ export const CASE_06_DATA: CaseData = {
       unlockedNote: 'اتساق مع طبيعة عمله الميداني خلف الكاميرا الرئيسية أثناء البث.',
       reaction: 'confident',
     },
+  ],
+  witnessQuestions: [
     // ===== شاهد الإثبات: هنا المنشاوي =====
     {
       id: 'w1',
