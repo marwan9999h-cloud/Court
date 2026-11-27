@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Volume2, VolumeX, Scale, Home, Settings, Award } from 'lucide-react';
-import { GamePhase, CaseData, LifetimeCareerStats } from '../types';
+import { Volume2, VolumeX, Scale, Home, Settings, Award, ClipboardList, Check, Circle } from 'lucide-react';
+import { GamePhase, CaseData, LifetimeCareerStats, InvestigationState } from '../types';
 
 interface MinimalOverlayProps {
   phase: GamePhase;
   caseData: CaseData;
   careerStats?: LifetimeCareerStats;
+  investigation: InvestigationState;
   feedbackMessage: string | null;
   hoveredObject: string | null;
   soundEnabled: boolean;
@@ -19,6 +21,7 @@ export function MinimalOverlay({
   phase,
   caseData,
   careerStats,
+  investigation,
   feedbackMessage,
   hoveredObject,
   soundEnabled,
@@ -27,6 +30,7 @@ export function MinimalOverlay({
   onOpenSettings,
   onOpenCareerProfile,
 }: MinimalOverlayProps) {
+  const [showChecklist, setShowChecklist] = useState(false);
   const isCourtroomPhase =
     phase === 'COURTROOM' ||
     phase === 'CASE_FILE' ||
@@ -37,6 +41,24 @@ export function MinimalOverlay({
     phase === 'VERDICT';
 
   if (!isCourtroomPhase) return null;
+
+  // Investigation checklist: mirrors the scoring engine's thoroughness rules so
+  // the judge can see what is still missing BEFORE issuing a verdict.
+  const asked = (key: string) => (investigation.askedQuestions[key]?.length || 0) > 0;
+  const witnessName =
+    caseData.characters.find((c) => c.id === 'char_guard' || c.role === 'witness')?.name ||
+    'الشاهد';
+  const checklistItems = [
+    { label: 'مطالعة ملف القضية ولائحة الاتهام', done: investigation.examinedFiles.includes('case_file') },
+    { label: 'فحص ملف الأحراز الجنائية', done: investigation.examinedFiles.includes('evidence') },
+    { label: 'سجل الشخصيات وحجج الغياب', done: investigation.examinedFiles.includes('characters') },
+    { label: `استجواب ${caseData.defendantNames[0] || 'المتهم الأول'}`, done: asked('karim') },
+    { label: `استجواب ${caseData.defendantNames[1] || 'المتهم الثاني'}`, done: asked('munther') },
+    { label: `استجواب ${caseData.defendantNames[2] || 'المتهم الثالث'}`, done: asked('moamen') },
+    { label: `سماع شهادة ${witnessName}`, done: asked('tarek') },
+  ];
+  const doneCount = checklistItems.filter((i) => i.done).length;
+  const allDone = doneCount === checklistItems.length;
 
   return (
     <div
@@ -111,6 +133,67 @@ export function MinimalOverlay({
             )}
           </button>
         </div>
+      </div>
+
+      {/* Investigation Checklist Chip (bottom-left, clear of the desk and cards) */}
+      <div className="pointer-events-auto absolute bottom-2.5 left-2.5 sm:bottom-3.5 sm:left-5 flex flex-col items-start gap-1.5">
+        <AnimatePresence>
+          {showChecklist && (
+            <motion.div
+              initial={{ opacity: 0, y: 8, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 6, scale: 0.97 }}
+              transition={{ duration: 0.15 }}
+              className="w-60 rounded-md bg-[#0d0c0a]/95 border border-[#d4af37]/40 backdrop-blur-md shadow-2xl p-3 space-y-1.5"
+            >
+              <div className="flex items-center justify-between border-b border-white/10 pb-1.5 mb-1">
+                <span className="text-[11px] font-bold text-[#d4af37] font-body-court">
+                  سير التحقيق قبل الحكم
+                </span>
+                <span className="text-[10px] font-mono text-white/60 tabular-nums">
+                  {doneCount}/{checklistItems.length}
+                </span>
+              </div>
+              {checklistItems.map((item) => (
+                <div key={item.label} className="flex items-center gap-2">
+                  {item.done ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  ) : (
+                    <Circle className="w-3.5 h-3.5 text-white/25 shrink-0" />
+                  )}
+                  <span
+                    className={`text-[11px] font-body-court leading-tight ${
+                      item.done ? 'text-white/85 line-through decoration-white/30' : 'text-white/55'
+                    }`}
+                  >
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <button
+          id="btn-hud-investigation-progress"
+          onClick={() => setShowChecklist((v) => !v)}
+          className={`h-8 sm:h-9 flex items-center gap-1.5 bg-black/65 hover:bg-black/85 border px-2.5 sm:px-3 rounded-full text-xs transition-all cursor-pointer backdrop-blur-md shadow-lg ${
+            allDone
+              ? 'border-emerald-500/60 hover:border-emerald-400'
+              : 'border-[#d4af37]/35 hover:border-[#d4af37]/75'
+          }`}
+          title="ما الذي فحصته قبل إصدار الحكم"
+        >
+          <ClipboardList
+            className={`w-3.5 h-3.5 ${allDone ? 'text-emerald-400' : 'text-[#d4af37]'}`}
+          />
+          <span
+            className={`text-[11px] font-bold tabular-nums whitespace-nowrap ${
+              allDone ? 'text-emerald-400' : 'text-[#d4af37]'
+            }`}
+          >
+            التحقيق {doneCount}/{checklistItems.length}
+          </span>
+        </button>
       </div>
 
       {/* Center Hover Tooltip Hint */}
