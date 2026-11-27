@@ -1,5 +1,6 @@
-import { Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
+import { PerformanceMonitor } from '@react-three/drei';
 import { CourtroomEnvironment } from './CourtroomEnvironment';
 import { BackgroundCharacters } from './BackgroundCharacters';
 import { Defendant } from './Defendant';
@@ -7,6 +8,39 @@ import { Witness } from './Witness';
 import { JudgeDesk } from './JudgeDesk';
 import { CameraController } from './CameraController';
 import { CaseData, FileId, GamePhase } from '../types';
+
+const MODAL_PHASES: GamePhase[] = [
+  'SETTINGS',
+  'ABOUT',
+  'HOW_TO_PLAY',
+  'LEVEL_COMPLETE',
+  'CASE_ARCHIVE',
+  'CAREER_PROFILE',
+];
+
+const isMobileDevice = () =>
+  typeof navigator !== 'undefined' &&
+  /Android|webOS|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+/** Keeps demand-mode rendering at a steady capped rate on mobile (battery + heat). */
+function FramePacer({ fps }: { fps: number }) {
+  const invalidate = useThree((s) => s.invalidate);
+  useEffect(() => {
+    const id = window.setInterval(() => invalidate(), 1000 / fps);
+    return () => window.clearInterval(id);
+  }, [fps, invalidate]);
+  return null;
+}
+
+/** Freezes the shadow map so it renders once instead of every frame (static scene). */
+function ShadowTuner({ frozen }: { frozen: boolean }) {
+  const gl = useThree((s) => s.gl);
+  useEffect(() => {
+    gl.shadowMap.autoUpdate = !frozen;
+    gl.shadowMap.needsUpdate = true;
+  }, [frozen, gl]);
+  return null;
+}
 
 interface CourtroomSceneProps {
   phase: GamePhase;
@@ -48,6 +82,18 @@ export function CourtroomScene({
   onHoverObject,
 }: CourtroomSceneProps) {
   const flaggedDefendants = caseData.characters.filter((c) => c.isDefendant);
+  const mobile = useRef(isMobileDevice()).current;
+  const [dpr, setDpr] = useState(() =>
+    typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 1.5) : 1,
+  );
+  const [lowTier, setLowTier] = useState(false);
+  const declines = useRef(0);
+
+  const frameloop = MODAL_PHASES.includes(phase)
+    ? ('never' as const)
+    : mobile
+      ? ('demand' as const)
+      : ('always' as const);
   const accused1 =
     caseData.characters.find((ch) => ch.id === 'char_defendant') ?? flaggedDefendants[0];
   const accused2 =
@@ -61,7 +107,7 @@ export function CourtroomScene({
   return (
     <div id="courtroom-canvas-container" className="w-full h-full relative cursor-default touch-none">
       <Canvas
-        frameloop={phase === 'SETTINGS' || phase === 'ABOUT' || phase === 'HOW_TO_PLAY' || phase === 'LEVEL_COMPLETE' || phase === 'CASE_ARCHIVE' || phase === 'CAREER_PROFILE' ? 'never' : 'always'}
+        frameloop={frameloop}
         shadows
         camera={{
           position: [0, 1.56, 0.82],
@@ -69,13 +115,34 @@ export function CourtroomScene({
           near: 0.1,
           far: 100,
         }}
-        dpr={typeof window !== 'undefined' ? [1, Math.min(window.devicePixelRatio, 2)] : 1}
+        dpr={typeof window !== 'undefined' ? Math.max(1, dpr) : 1}
         gl={{
           antialias: true,
-          powerPreference: 'default',
+          powerPreference: 'high-performance',
         }}
       >
         <color attach="background" args={['#1a130e']} />
+        {frameloop === 'demand' && <FramePacer fps={30} />}
+        <ShadowTuner frozen={lowTier} />
+        <PerformanceMonitor
+          ms={300}
+          iterations={6}
+          flipflops={4}
+          onDecline={() => {
+            declines.current += 1;
+            if (declines.current === 1) {
+              setDpr(Math.min(window.devicePixelRatio || 1, 1.25));
+            } else if (declines.current === 2) {
+              setDpr(1);
+            } else {
+              setLowTier(true);
+            }
+          }}
+          onIncline={() => {
+            declines.current = Math.max(0, declines.current - 1);
+            setDpr(Math.min(window.devicePixelRatio || 1, 1.5));
+          }}
+        />
         <Suspense fallback={null}>
           {/* First-person fixed Judge perspective controller with smooth touch/mouse look */}
           <CameraController
@@ -125,7 +192,7 @@ export function CourtroomScene({
           />
 
           {/* 6. Procedural Courtroom Architecture & Paneling */}
-          <CourtroomEnvironment quality="high" />
+          <CourtroomEnvironment quality={lowTier ? 'performance' : 'high'} />
 
           {/* 7. The Three Accused Standing Side by Side in Prison Uniforms */}
           <Defendant
