@@ -38,7 +38,7 @@ export const CASE_04_DATA: CaseData = {
   ],
   coverInfo: {
     courtHeader: 'محكمة الجنايات',
-    fileNumber: 'FILE 004',
+    fileNumber: 'FILE 003',
     caseTitle: 'آخر رحلة',
     caseType: 'جناية قتل عمد مع سبق الإصرار والترصد',
     classification: 'سرّي للغاية',
@@ -487,6 +487,8 @@ export const CASE_04_DATA: CaseData = {
       reaction: 'defensive',
     },
 
+  ],
+  interrogations2: [
     // ===== المتهمة الثانية: يارا =====
     {
       id: 'q5',
@@ -522,6 +524,8 @@ export const CASE_04_DATA: CaseData = {
       reaction: 'nervous',
     },
 
+  ],
+  interrogations3: [
     // ===== المتهم الثالث: أدهم =====
     {
       id: 'q9',
@@ -557,6 +561,8 @@ export const CASE_04_DATA: CaseData = {
       reaction: 'defensive',
     },
 
+  ],
+  witnessQuestions: [
     // ===== الشاهدة: نادين =====
 
     {
