@@ -215,6 +215,10 @@ export const CASE_01_VERDICT_CONFIG: CaseVerdictConfig = {
       preferredReasons: ['card_cloning_innocence', 'insufficient_evidence'],
       truthExplanation:
         'كريم المنصور بريء من السرقة؛ بطاقته استُنسخت قبل يومين، وشريط المراقبة يظهر شخصاً بزي صيانة، ولم تُرصد بصماته على الخزنة الداخلية التي فُتحت بقفازات مهنية.',
+      notes: {
+        acquittalFair: 'كريم المنصور: حكم عادل بالبراءة يتسق مع دليل استنساخ البطاقة وغياب البصمات عن الخزنة.',
+        innocentConvicted: 'كريم المنصور: إدانة غير عادلة لشخص بريء؛ الأدلة الجنائية أثبتت استنساخ بطاقته من طرف ثالث.',
+      },
     },
     {
       defendantId: 'char_maintenance',
@@ -236,6 +240,10 @@ export const CASE_01_VERDICT_CONFIG: CaseVerdictConfig = {
       preferredReasons: ['forensic_proof', 'premeditated_intent'],
       truthExplanation:
         'منذر وهبة هو المنفذ المباشر للسرقة؛ عُثر على مفتاح الصيانة الخاص به بمسرح الجريمة ملوثاً بزيت التهوية، وظهرت هيئة بزي الصيانة في الشريط، وطلب سابقاً خرائط ممرات الهواء من كريم وتلقى حوالة مالية غامضة.',
+      notes: {
+        lenientPenalty: 'منذر وهبة: التوجه للإدانة صحيح، لكن العقوبة المختارة متساهلة جداً لا تتناسب مع خطورة الاستيلاء على وثائق سيادية.',
+        deathPenaltyHarsh: 'منذر وهبة: عقوبة الإعدام مبالغ فيها ولا تتناسب مع جريمة سرقة غير مصحوبة بقتل.',
+      },
     },
     {
       defendantId: 'char_control',
@@ -257,6 +265,10 @@ export const CASE_01_VERDICT_CONFIG: CaseVerdictConfig = {
       preferredReasons: ['co_conspiracy_sabotage', 'witness_contradiction'],
       truthExplanation:
         'مؤمن رزق شريك أساسي في التغطية على السرقة؛ سجل غرفة المراقبة أثبت فتح الغرفة ببطاقته في 23:44 وصدور أمر قطع البث من محطته رقم 3، كما شاهده الحارس طارق الحمد داخل الغرفة ليلتها مكذباً ادعاءه بالغياب المرضي.',
+      notes: {
+        lenientPenalty: 'مؤمن رزق: التوجه للإدانة صحيح، لكن العقوبة المختارة متساهلة جداً لا تتناسب مع خطورة الاستيلاء على وثائق سيادية.',
+        deathPenaltyHarsh: 'مؤمن رزق: عقوبة الإعدام مبالغ فيها ولا تتناسب مع جريمة سرقة غير مصحوبة بقتل.',
+      },
     },
   ],
 };
