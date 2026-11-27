@@ -37,7 +37,7 @@ export const CASE_03_DATA: CaseData = {
   ],
   coverInfo: {
     courtHeader: 'محكمة الجنايات',
-    fileNumber: 'FILE 003',
+    fileNumber: 'FILE 002',
     caseTitle: 'ليلة فيلا الزمالك',
     caseType: 'جناية قتل عمد مع سبق الإصرار والترصد',
     classification: 'سرّي للغاية',
@@ -511,6 +511,8 @@ export const CASE_03_DATA: CaseData = {
       reaction: 'nervous',
     },
 
+  ],
+  interrogations2: [
     // ===== المتهمة الثانية: سلمى =====
     {
       id: 'q5',
@@ -551,6 +553,8 @@ export const CASE_03_DATA: CaseData = {
       reaction: 'defensive',
     },
 
+  ],
+  interrogations3: [
     // ===== المتهم الثالث: فريد =====
     {
       id: 'q9',
@@ -592,6 +596,8 @@ export const CASE_03_DATA: CaseData = {
     },
 
 
+  ],
+  witnessQuestions: [
     // ===== الشاهدة: نادين =====
     {
       id: 'w1',
