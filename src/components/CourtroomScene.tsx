@@ -47,10 +47,16 @@ export function CourtroomScene({
   onToggleMicrophone,
   onHoverObject,
 }: CourtroomSceneProps) {
-  const accused1 = caseData.characters.find((ch) => ch.id === 'char_defendant');
-  const accused2 = caseData.characters.find((ch) => ch.id === 'char_maintenance');
-  const accused3 = caseData.characters.find((ch) => ch.id === 'char_control');
-  const witnessGuard = caseData.characters.find((ch) => ch.id === 'char_guard');
+  const flaggedDefendants = caseData.characters.filter((c) => c.isDefendant);
+  const accused1 =
+    caseData.characters.find((ch) => ch.id === 'char_defendant') ?? flaggedDefendants[0];
+  const accused2 =
+    caseData.characters.find((ch) => ch.id === 'char_maintenance') ?? flaggedDefendants[1];
+  const accused3 =
+    caseData.characters.find((ch) => ch.id === 'char_control') ?? flaggedDefendants[2];
+  const witnessGuard =
+    caseData.characters.find((ch) => ch.id === 'char_guard') ??
+    caseData.characters.find((ch) => ch.role === 'witness');
 
   return (
     <div id="courtroom-canvas-container" className="w-full h-full relative cursor-default touch-none">
@@ -133,7 +139,7 @@ export function CourtroomScene({
             onHover={onHoverObject}
           />
           <Defendant
-            name={accused2?.name || 'المتهم الثاني'}
+            name={accused2?.name || caseData.defendantNames[1] || 'المتهم الثاني'}
             position={[0, 0, -4.6]}
             rotationY={0}
             reactKey={gavelStrikes}
@@ -143,7 +149,7 @@ export function CourtroomScene({
             onHover={onHoverObject}
           />
           <Defendant
-            name={accused3?.name || 'المتهم الثالث'}
+            name={accused3?.name || caseData.defendantNames[2] || 'المتهم الثالث'}
             position={[1.85, 0, -4.6]}
             rotationY={-0.08}
             reactKey={gavelStrikes}
