@@ -18,27 +18,18 @@ const MODAL_PHASES: GamePhase[] = [
   'CAREER_PROFILE',
 ];
 
-const isMobileDevice = () =>
-  typeof navigator !== 'undefined' &&
-  /Android|webOS|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-
-/** Keeps demand-mode rendering at a steady capped rate on mobile (battery + heat). */
-function FramePacer({ fps }: { fps: number }) {
-  const invalidate = useThree((s) => s.invalidate);
-  useEffect(() => {
-    const id = window.setInterval(() => invalidate(), 1000 / fps);
-    return () => window.clearInterval(id);
-  }, [fps, invalidate]);
-  return null;
-}
-
-/** Freezes the shadow map so it renders once instead of every frame (static scene). */
-function ShadowTuner({ frozen }: { frozen: boolean }) {
+/** Freezes the shadow map so it renders once instead of every frame (static scene).
+ *  Shadows re-render once shortly after mount to catch the settled scene. */
+function ShadowTuner() {
   const gl = useThree((s) => s.gl);
   useEffect(() => {
-    gl.shadowMap.autoUpdate = !frozen;
+    gl.shadowMap.autoUpdate = false;
     gl.shadowMap.needsUpdate = true;
-  }, [frozen, gl]);
+    const id = window.setTimeout(() => {
+      gl.shadowMap.needsUpdate = true;
+    }, 2500);
+    return () => window.clearTimeout(id);
+  }, [gl]);
   return null;
 }
 
@@ -82,18 +73,15 @@ export function CourtroomScene({
   onHoverObject,
 }: CourtroomSceneProps) {
   const flaggedDefendants = caseData.characters.filter((c) => c.isDefendant);
-  const mobile = useRef(isMobileDevice()).current;
+  // Full device sharpness by default (up to 2x); the governor below only steps
+  // down after sustained very low FPS on weak devices.
   const [dpr, setDpr] = useState(() =>
-    typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 1.5) : 1,
+    typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1,
   );
   const [lowTier, setLowTier] = useState(false);
   const declines = useRef(0);
 
-  const frameloop = MODAL_PHASES.includes(phase)
-    ? ('never' as const)
-    : mobile
-      ? ('demand' as const)
-      : ('always' as const);
+  const frameloop = MODAL_PHASES.includes(phase) ? ('never' as const) : ('always' as const);
   const accused1 =
     caseData.characters.find((ch) => ch.id === 'char_defendant') ?? flaggedDefendants[0];
   const accused2 =
@@ -122,16 +110,15 @@ export function CourtroomScene({
         }}
       >
         <color attach="background" args={['#1a130e']} />
-        {frameloop === 'demand' && <FramePacer fps={30} />}
-        <ShadowTuner frozen={lowTier} />
+        <ShadowTuner />
         <PerformanceMonitor
-          ms={300}
-          iterations={6}
-          flipflops={4}
+          ms={1000}
+          iterations={10}
+          flipflops={5}
           onDecline={() => {
             declines.current += 1;
             if (declines.current === 1) {
-              setDpr(Math.min(window.devicePixelRatio || 1, 1.25));
+              setDpr(Math.min(window.devicePixelRatio || 1, 1.5));
             } else if (declines.current === 2) {
               setDpr(1);
             } else {
@@ -140,7 +127,7 @@ export function CourtroomScene({
           }}
           onIncline={() => {
             declines.current = Math.max(0, declines.current - 1);
-            setDpr(Math.min(window.devicePixelRatio || 1, 1.5));
+            setDpr(Math.min(window.devicePixelRatio || 1, 2));
           }}
         />
         <Suspense fallback={null}>
