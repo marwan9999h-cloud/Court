@@ -15,7 +15,7 @@ export const CASE_05_DATA: CaseData = {
   defendantNames: ['كريم منصور', 'سلمى العطار', 'أدهم الدسوقي'],
   coverInfo: {
     courtHeader: 'محكمة جنايات القاهرة',
-    fileNumber: 'FILE 005',
+    fileNumber: 'FILE 004',
     caseTitle: 'الطابق السابع',
     caseType: 'جناية قتل عمد مع سبق الإصرار',
     classification: 'سرّي للغاية',
@@ -340,6 +340,8 @@ export const CASE_05_DATA: CaseData = {
       unlockedNote: 'تردد واضح وتبرير عام للارتباك دون نفي حقيقي لوجوده في مسرح الجريمة في التوقيت الحاسم.',
       reaction: 'hesitant',
     },
+  ],
+  interrogations2: [
     // ===== المتهم: سلمى العطار =====
     {
       id: 'q5',
@@ -369,6 +371,8 @@ export const CASE_05_DATA: CaseData = {
       unlockedNote: 'تتجنب الاتهام المباشر وتكتفي بالإشارة إلى طبيعة الاحتكاك المهني حول الصفقات.',
       reaction: 'hesitant',
     },
+  ],
+  interrogations3: [
     // ===== المتهم: أدهم الدسوقي =====
     {
       id: 'q9',
@@ -398,6 +402,8 @@ export const CASE_05_DATA: CaseData = {
       unlockedNote: 'اتساق روايته مع انشغاله بأعمال الصيانة الفنية في الدور السادس.',
       reaction: 'confident',
     },
+  ],
+  witnessQuestions: [
     // ===== شاهد الإثبات: نورهان الجندي =====
     {
       id: 'w1',
