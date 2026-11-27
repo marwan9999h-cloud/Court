@@ -32,7 +32,7 @@ export const CASE_02_DATA: CaseData = {
   coverInfo: {
 
     courtHeader: 'محكمة الجنايات',
-    fileNumber: 'FILE 002',
+    fileNumber: 'FILE 001',
     caseTitle: 'الوريث الأخير',
     caseType: 'جناية قتل عمد مع سبق الإصرار والترصد',
     classification: 'سرّي للغاية',
@@ -470,6 +470,8 @@ export const CASE_02_DATA: CaseData = {
       reaction: 'nervous',
     },
 
+  ],
+  interrogations2: [
     // ===== المتهم الثاني: كريم =====
     {
       id: 'q5',
@@ -510,6 +512,8 @@ export const CASE_02_DATA: CaseData = {
       reaction: 'confident',
     },
 
+  ],
+  interrogations3: [
     // ===== المتهمة الثالثة: ليلى =====
     {
       id: 'q9',
@@ -550,6 +554,8 @@ export const CASE_02_DATA: CaseData = {
       reaction: 'confident',
     },
 
+  ],
+  witnessQuestions: [
     // ===== الشاهد: سامح =====
     {
       id: 'w1',
