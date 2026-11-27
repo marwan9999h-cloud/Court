@@ -502,7 +502,7 @@ export const DEFAULT_CASE_DATA: CaseData = {
   defendantNames: ['كريم المنصور', 'منذر وهبة', 'مؤمن رزق'],
   coverInfo: {
     courtHeader: 'محكمة العدل العليا — الدائرة الجنائية',
-    fileNumber: 'FILE 001',
+    fileNumber: 'FILE 007',
     caseTitle: 'صمت الأرشيف الوطني',
     caseType: 'جناية سرقة وثائق أمن دولة',
     classification: 'سري للغاية',
