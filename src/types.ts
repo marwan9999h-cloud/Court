@@ -172,6 +172,13 @@ export interface DefendantVerdictRule {
   weakOrWrongEvidenceIds: string[];
   preferredReasons: ReasonCategoryId[];
   truthExplanation: string;
+  notes?: {
+    acquittalFair?: string;
+    innocentConvicted?: string;
+    lenientPenalty?: string;
+    deathPenaltyFair?: string;
+    deathPenaltyHarsh?: string;
+  };
 }
 
 export interface CaseVerdictConfig {
