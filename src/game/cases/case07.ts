@@ -15,7 +15,7 @@ export const CASE_07_DATA: CaseData = {
   defendantNames: ['طارق الحسيني', 'حازم المنياوي', 'محمود الجوهري'],
   coverInfo: {
     courtHeader: 'محكمة جنايات القاهرة',
-    fileNumber: 'FILE 007',
+    fileNumber: 'FILE 006',
     caseTitle: 'مليون في 15 دقيقة',
     caseType: 'جناية سرقة بالسطو المسلح واشتراك جنائي',
     classification: 'سرّي للغاية',
@@ -340,6 +340,8 @@ export const CASE_07_DATA: CaseData = {
       unlockedNote: 'نفي عام واستبعاد للشبهة دون دحض الأدلة الرقمية والبصرية التي تربط حسابه وتصريحه بالعملية.',
       reaction: 'defensive',
     },
+  ],
+  interrogations2: [
     // ===== المتهم: حازم المنياوي =====
     {
       id: 'q5',
@@ -369,6 +371,8 @@ export const CASE_07_DATA: CaseData = {
       unlockedNote: 'يشير إلى الصلاحيات الإدارية العليا للمدير مع التحفظ في إصدار حكم قاطع.',
       reaction: 'hesitant',
     },
+  ],
+  interrogations3: [
     // ===== المتهم: محمود الجوهري =====
     {
       id: 'q9',
@@ -398,6 +402,8 @@ export const CASE_07_DATA: CaseData = {
       unlockedNote: 'اتساق تسلسل حركته مع مغادرة المدير الساعة 8:30 وصعوده لمراجعة الملفات في الدور الثاني.',
       reaction: 'confident',
     },
+  ],
+  witnessQuestions: [
     // ===== شاهد الإثبات: كريم السعدني =====
     {
       id: 'w1',
