@@ -164,6 +164,9 @@ export function MainMenu({
         <div>THE COURT • VERSION 1.4</div>
         <div>LEGAL NOIR SIMULATOR</div>
       </div>
+      <div dir="ltr" className="w-full text-center text-[11px] text-[#d4af37]/70 font-mono tracking-[0.18em] pointer-events-none select-none">
+        By : Marwan M. Hammad
+      </div>
     </div>
   );
 }
