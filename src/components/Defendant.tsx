@@ -16,7 +16,7 @@ interface DefendantProps {
 }
 
 export function Defendant({
-  name = 'كريم المنصور',
+  name = 'المتهم',
   position = [0, 0, -4.5],
   rotationY = 0,
   onInterrogate,
@@ -331,4 +331,3 @@ export function Defendant({
     </group>
   );
 }
-
