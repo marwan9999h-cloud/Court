@@ -11,7 +11,9 @@ import {
   Star,
   UserCheck,
   Sparkles,
+  Share2,
 } from 'lucide-react';
+import { shareCourtVerdict } from '../utils/shareCard';
 import {
   CaseEvaluationResult,
   LevelDefinition,
@@ -52,6 +54,46 @@ function TenStarsRow({ stars }: { stars: number }) {
         );
       })}
     </div>
+  );
+}
+
+function ShareVerdictButton({
+  level,
+  evaluation,
+  rankTitle,
+}: {
+  level: LevelDefinition;
+  evaluation: CaseEvaluationResult;
+  rankTitle: string;
+}) {
+  const [isSharing, setIsSharing] = React.useState(false);
+  const handleShare = async () => {
+    if (isSharing) return;
+    setIsSharing(true);
+    try {
+      await shareCourtVerdict({
+        fileCode: level.fileCode,
+        caseTitle: level.title,
+        stars: evaluation.stars,
+        verdictCorrect: evaluation.verdictCorrect,
+        fairnessLabel: evaluation.fairnessLabel,
+        rankTitle,
+      });
+    } catch {
+      // Share sheet dismissed or encode failed; nothing to recover.
+    } finally {
+      setIsSharing(false);
+    }
+  };
+  return (
+    <button
+      onClick={handleShare}
+      disabled={isSharing}
+      className="min-h-[44px] flex items-center gap-1.5 px-4 py-2 rounded-sm bg-[#d4af37]/15 hover:bg-[#d4af37]/25 border border-[#d4af37]/60 text-xs sm:text-sm font-bold text-[#f3d166] cursor-pointer font-serif-court disabled:opacity-60"
+    >
+      <Share2 className="w-4 h-4" />
+      <span>{isSharing ? 'جاري التجهيز...' : 'شارك الحكم'}</span>
+    </button>
   );
 }
 
@@ -349,6 +391,12 @@ export function LevelCompleteModal({
               <RotateCcw className="w-3.5 h-3.5" />
               <span>إعادة المحاكمة</span>
             </button>
+
+            <ShareVerdictButton
+              level={level}
+              evaluation={evaluation}
+              rankTitle={rank.title}
+            />
 
             {nextLevel && (
               <button
